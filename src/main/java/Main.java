@@ -10,6 +10,12 @@ public class Main {
   public static String getPathFromAddress(String address) {
     return address.split(" ")[1];
   }
+  public static String echoCommand(String path) {
+    if (path.startsWith("/echo/")) {
+      return path.split("/echo/")[1];
+    }
+    return "";
+  }
   public static void main(String[] args) {
     try (ServerSocket serverSocket = new ServerSocket(4221)) {
       // Since the tester restarts your program quite often, setting SO_REUSEADDR
@@ -34,14 +40,22 @@ public class Main {
             if (clientData.strip().startsWith("GET")) {
               String path = getPathFromAddress(clientData);
 
-              if (!Objects.equals(path, "/")) {
-                out.write("HTTP/1.1 404 Not Found\r\n\r\n");
-                out.flush();
-              } else {
-                out.write("HTTP/1.1 200 OK\r\n\r\n");
-                out.flush();
+              switch (path) {
+                case "/" -> {
+                  out.write("HTTP/1.1 200 OK\r\n\r\n");
+                  out.flush();
+                }
+                case null, default -> {
+                  String echo = echoCommand(path);
+                  if (!echo.isEmpty()) {
+                    out.write(String.format("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: %d\r\n\r\n%s", echo.length(), echo));
+                    out.flush();
+                  } else {
+                    out.write("HTTP/1.1 404 Not Found\r\n\r\n");
+                    out.flush();
+                  }
+                }
               }
-
             }
 
             if (clientData.isEmpty()) { // End of headers
