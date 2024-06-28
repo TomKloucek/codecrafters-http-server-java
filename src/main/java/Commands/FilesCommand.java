@@ -1,7 +1,6 @@
 package Commands;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,7 +35,18 @@ public class FilesCommand {
     }
 
     public String getFileContent(String path) throws IOException {
-        System.out.println(dir+path);
         return Files.readString(Paths.get(dir+path), StandardCharsets.UTF_8);
+    }
+
+    public boolean writeToFile(String path, String content) {
+        try {
+            File file = new File(dir+path);
+            Writer output = new BufferedWriter(new FileWriter(file));
+            output.write(content);
+            output.close();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

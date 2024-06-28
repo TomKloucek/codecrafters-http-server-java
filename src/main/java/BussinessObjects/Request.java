@@ -1,3 +1,5 @@
+package BussinessObjects;
+
 import java.util.List;
 
 public class Request {
@@ -8,6 +10,8 @@ public class Request {
     private String userAgent;
     private String accept;
     private String body;
+    private int contentLength;
+    private String contentType;
 
     public String getRequestType() {
         return requestType;
@@ -65,6 +69,22 @@ public class Request {
         this.body = body;
     }
 
+    public int getContentLength() {
+        return contentLength;
+    }
+
+    public void setContentLength(int contentLength) {
+        this.contentLength = contentLength;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
     public Request(List<String> request) {
         try {
         String[] reqLine = requestLineParser(request.getFirst());
@@ -79,6 +99,10 @@ public class Request {
                 this.userAgent = request.get(i).split("User-Agent: ")[1];
             } else if (request.get(i).startsWith("Accept")) {
                 this.accept = request.get(i).split("Accept: ")[1];
+            } else if (request.get(i).startsWith("Content-Length")) {
+                this.contentLength = Integer.parseInt(request.get(i).split("Content-Length: ")[1]);
+            } else if (request.get(i).startsWith("Content-Type")) {
+                this.contentType = request.get(i).split("Content-Type: ")[1];
             } else {
                 this.body += request.get(i);
             }
@@ -102,6 +126,8 @@ public class Request {
                 ", userAgent='" + userAgent + '\'' +
                 ", accept='" + accept + '\'' +
                 ", body='" + body + '\'' +
+                ", contentLength=" + contentLength +
+                ", contentType='" + contentType + '\'' +
                 '}';
     }
 }
