@@ -1,5 +1,6 @@
 package BussinessObjects;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Request {
@@ -12,6 +13,7 @@ public class Request {
     private String body;
     private int contentLength;
     private String contentType;
+    private String encoding;
 
     public String getRequestType() {
         return requestType;
@@ -85,6 +87,14 @@ public class Request {
         this.contentType = contentType;
     }
 
+    public String getEncoding() {
+        return encoding;
+    }
+
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
+    }
+
     public Request(List<String> request) {
         try {
         String[] reqLine = requestLineParser(request.getFirst());
@@ -93,22 +103,24 @@ public class Request {
         this.version = reqLine[2];
 
         for (int i = 1; i < request.size(); i++) {
-            if (request.get(i).startsWith("Host")) {
+            if (request.get(i).startsWith("Host:")) {
                 this.host = request.get(i).split("Host: ")[1];
-            } else if (request.get(i).startsWith("User-Agent")) {
+            } else if (request.get(i).startsWith("User-Agent:")) {
                 this.userAgent = request.get(i).split("User-Agent: ")[1];
-            } else if (request.get(i).startsWith("Accept")) {
+            } else if (request.get(i).startsWith("Accept:")) {
                 this.accept = request.get(i).split("Accept: ")[1];
-            } else if (request.get(i).startsWith("Content-Length")) {
+            } else if (request.get(i).startsWith("Content-Length:")) {
                 this.contentLength = Integer.parseInt(request.get(i).split("Content-Length: ")[1]);
-            } else if (request.get(i).startsWith("Content-Type")) {
+            } else if (request.get(i).startsWith("Content-Type:")) {
                 this.contentType = request.get(i).split("Content-Type: ")[1];
+            } else if (request.get(i).startsWith("Accept-Encoding:")) {
+                this.encoding = request.get(i).split("Accept-Encoding: ")[1];
             } else {
                 this.body += request.get(i);
             }
         }
         } catch (Exception e) {
-            System.err.println("Wrong request");
+            System.err.println("Wrong request: "+ Arrays.toString(e.getStackTrace()));
         }
     }
 
