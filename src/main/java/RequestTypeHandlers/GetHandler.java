@@ -17,7 +17,7 @@ public class GetHandler implements TypeHandler{
     @Override
     public void handle(BufferedReader in, Writer out, Request clientReq) throws IOException {
         String encoding = "";
-        if (Objects.equals(clientReq.getEncoding(), "gzip")) {
+        if (clientReq.getEncoding() != null && clientReq.getEncoding().contains("gzip")) {
             encoding = "Content-Encoding: gzip\r\n";
         }
         if (clientReq.getPath().equals("/")) {

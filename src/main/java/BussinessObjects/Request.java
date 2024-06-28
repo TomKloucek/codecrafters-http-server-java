@@ -1,6 +1,7 @@
 package BussinessObjects;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Request {
@@ -13,7 +14,7 @@ public class Request {
     private String body;
     private int contentLength;
     private String contentType;
-    private String encoding;
+    private List<String> encoding;
 
     public String getRequestType() {
         return requestType;
@@ -87,12 +88,12 @@ public class Request {
         this.contentType = contentType;
     }
 
-    public String getEncoding() {
+    public List<String> getEncoding() {
         return encoding;
     }
 
     public void setEncoding(String encoding) {
-        this.encoding = encoding;
+        this.encoding = Collections.singletonList(encoding);
     }
 
     public Request(List<String> request) {
@@ -114,7 +115,8 @@ public class Request {
             } else if (request.get(i).startsWith("Content-Type:")) {
                 this.contentType = request.get(i).split("Content-Type: ")[1];
             } else if (request.get(i).startsWith("Accept-Encoding:")) {
-                this.encoding = request.get(i).split("Accept-Encoding: ")[1];
+                this.encoding = Arrays.stream(request.get(i).split("Accept-Encoding: ")[1].split(",")).map(String::strip).toList();
+                System.out.println(this.encoding);
             } else {
                 this.body += request.get(i);
             }
