@@ -1,6 +1,9 @@
+import Commands.FilesCommand;
+
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +56,16 @@ public class ClientConnectionHandler implements Runnable {
                 } else if (clientReq.getPath().startsWith("/user-agent")) {
                     out.write(String.format("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: %d\r\n\r\n%s", clientReq.getUserAgent().length(), clientReq.getUserAgent()));
                     out.flush();
+                } else if (clientReq.getPath().startsWith("/files")) {
+                    FilesCommand filesCommand = FilesCommand.getInstance("");
+                    try {
+                        String content = filesCommand.getFileContent(clientReq.getPath().split("/files/")[1]);
+                        out.write(String.format("HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: %d\r\n\r\n%s", content.length(), content));
+                        out.flush();
+                    } catch (Exception e) {
+                        out.write("HTTP/1.1 404 Not Found\r\n\r\n");
+                        out.flush();
+                    }
                 }
                 else {
                     out.write("HTTP/1.1 404 Not Found\r\n\r\n");

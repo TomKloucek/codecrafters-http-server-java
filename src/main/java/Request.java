@@ -66,6 +66,7 @@ public class Request {
     }
 
     public Request(List<String> request) {
+        try {
         String[] reqLine = requestLineParser(request.getFirst());
         this.requestType = reqLine[0];
         this.path = reqLine[1];
@@ -81,6 +82,9 @@ public class Request {
             } else {
                 this.body += request.get(i);
             }
+        }
+        } catch (Exception e) {
+            System.err.println("Wrong request");
         }
     }
 
