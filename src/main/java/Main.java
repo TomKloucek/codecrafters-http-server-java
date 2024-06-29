@@ -1,5 +1,6 @@
 import Commands.FilesCommand;
 import ConnectionHandler.ClientConnectionHandler;
+import Encodings.GzipEncoding;
 
 import java.io.*;
 import java.net.ServerSocket;

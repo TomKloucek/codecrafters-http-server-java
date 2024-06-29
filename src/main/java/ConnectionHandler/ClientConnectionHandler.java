@@ -9,7 +9,6 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ClientConnectionHandler implements Runnable {
 
@@ -24,10 +23,10 @@ public class ClientConnectionHandler implements Runnable {
         System.out.println("Accepted new connection");
 
         // Reading data from the client
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(
-                clientSocket.getInputStream(), StandardCharsets.UTF_8));
-             Writer out = new BufferedWriter(new OutputStreamWriter(
-                     new BufferedOutputStream(clientSocket.getOutputStream()), StandardCharsets.UTF_8))) {
+        try {
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                    clientSocket.getInputStream(), StandardCharsets.UTF_8));
+            OutputStream out = clientSocket.getOutputStream();
             List<String> request = new ArrayList<>();
             // Read data sent by the client
             String clientData;
